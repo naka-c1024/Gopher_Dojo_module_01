@@ -2,7 +2,6 @@
 package imgconv
 
 import (
-	"flag"
 	"fmt"
 	"image"
 	_ "image/jpeg"
@@ -12,85 +11,83 @@ import (
 	"strings"
 )
 
-// ErrMsg はエラーメッセージを表すユーザー定義型です。
 type ErrMsg string
 
-func isDir(directory string) bool {
-	fInfo, _ := os.Stat(directory)
-	if fInfo == nil {
-		fmt.Fprintf(os.Stderr, "error: %s: no such file or directory\n", directory)
-		os.Exit(1)
-	}
-	if fInfo.IsDir() == false {
-		return false
-	}
-	return true
-}
-
-func isPng(str string) bool {
-	if ext := filepath.Ext(str); ext == ".png" {
+func IsPng(path string) bool {
+	if ext := filepath.Ext(path); ext == ".png" {
 		return true
 	} else {
 		return false
 	}
 }
 
-func checkError(err error, msg ErrMsg) {
+func TrimSpaceLeft(err error) string {
+	str := err.Error()
+	spaceIndex := strings.Index(str, " ")
+	if spaceIndex == -1 {
+		return str
+	}
+	return str[spaceIndex+1:]
+}
+
+var OsExit = os.Exit
+var OsStderr = os.Stderr
+
+func CheckError(err error, msg ErrMsg, path string) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v: %v\n", msg, err)
-		os.Exit(1)
+		fmt.Fprintf(OsStderr, "error: %s: %v: %v\n", path, msg, TrimSpaceLeft(err))
+		OsExit(1)
 	}
 }
 
-func jpgToPng(path string) {
+func JpgToPng(path string) {
 	file, err := os.Open(path)
-	checkError(err, "open")
+	CheckError(err, "open", path)
 	defer file.Close()
 
 	img, _, err := image.Decode(file)
-	checkError(err, "decode")
+	CheckError(err, "decode", path)
 
 	png_file := strings.Replace(path, "jpg", "png", -1)
 	out, err := os.Create(png_file)
-	checkError(err, "create")
+	CheckError(err, "create", path)
 	defer out.Close()
 
 	png.Encode(out, img)
 }
 
-func myWalk(dirname string) {
-	if isDir(dirname) == false {
-		fmt.Fprintf(os.Stderr, "error: %s is not directory\n", dirname)
-		os.Exit(0)
+func DirExists(dirname string) {
+	if _, err := os.Stat(dirname); err != nil {
+		fmt.Fprintf(OsStderr, "error: %s\n", TrimSpaceLeft(err))
+		OsExit(1)
 	}
+}
+
+func IfJpg(path string, info os.FileInfo) {
+	if filepath.Ext(path) == ".jpg" {
+		JpgToPng(path)
+	} else if info.IsDir() == false && IsPng(path) == false {
+		fmt.Fprintf(os.Stderr, "error: %s is not a valid file\n", path)
+	}
+}
+
+func ConvertMain(dirname string) {
+	DirExists(dirname)
 	err := filepath.Walk(dirname,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			if filepath.Ext(path) == ".jpg" {
-				jpgToPng(path)
-			} else if isDir(path) == false && isPng(path) == false {
-				fmt.Fprintf(os.Stderr, "error: %s is not a valid file\n", path)
-			}
+			// if filepath.Ext(path) == ".jpg" {
+			// 	JpgToPng(path)
+			// } else if info.IsDir() == false && IsPng(path) == false {
+			// 	fmt.Fprintf(os.Stderr, "error: %s is not a valid file\n", path)
+			// }
+			IfJpg(path, info)
 			return nil
 		})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
-	}
-}
-
-// Convert は.jpgファイルを.pngファイルに変換する関数です。
-func Convert() {
-	flag.Parse()
-	if dirname := flag.Arg(0); dirname == "" {
-		fmt.Fprintf(os.Stderr, "error: invalid argument\n")
-		os.Exit(0)
-	} else if flag.Arg(1) != "" {
-		fmt.Fprintf(os.Stderr, "error: multiple arguments\n")
-		os.Exit(0)
-	} else {
-		myWalk(dirname)
+		fmt.Fprintf(os.Stderr, "error: %v\n", TrimSpaceLeft(err))
+		OsExit(1)
 	}
 }
