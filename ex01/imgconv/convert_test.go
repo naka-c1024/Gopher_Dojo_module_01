@@ -120,6 +120,25 @@ func TestDirExists(t *testing.T) {
 	}
 }
 
+func TestWalkMainFunc(t *testing.T) {
+	cases := []struct {
+		input string // 関数に渡すもの
+	}{
+		{input: "../testdata/Go-BB_cover.jpg"},
+		{input: "../testdata/Go-BB_spread1.jpg"},
+		{input: "../testdata/Go-BB_spread2.jpg"},
+		{input: "../testdata/logos.jpg"},
+	}
+	for _, c := range cases {
+		imgconv.WalkMainFunc(c.input, nil)
+		png_file := strings.Replace(c.input, "jpg", "png", -1)
+		if _, err := os.Stat(png_file); err != nil {
+			t.Errorf("%v do not create", png_file)
+		}
+		exec.Command("rm", png_file).Run()
+	}
+}
+
 func TestConvertMain(t *testing.T) {
 	// OsExit のバックアップと defer でリカバー
 	oldOsExit := imgconv.OsExit

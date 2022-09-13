@@ -63,7 +63,7 @@ func DirExists(dirname string) {
 	}
 }
 
-func IfJpg(path string, info os.FileInfo) {
+func WalkMainFunc(path string, info os.FileInfo) {
 	if filepath.Ext(path) == ".jpg" {
 		JpgToPng(path)
 	} else if info.IsDir() == false && IsPng(path) == false {
@@ -78,12 +78,7 @@ func ConvertMain(dirname string) {
 			if err != nil {
 				return err
 			}
-			// if filepath.Ext(path) == ".jpg" {
-			// 	JpgToPng(path)
-			// } else if info.IsDir() == false && IsPng(path) == false {
-			// 	fmt.Fprintf(os.Stderr, "error: %s is not a valid file\n", path)
-			// }
-			IfJpg(path, info)
+			WalkMainFunc(path, info)
 			return nil
 		})
 	if err != nil {
