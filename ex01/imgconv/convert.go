@@ -82,7 +82,7 @@ func ConvertMain(dirname string) {
 			return nil
 		})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", TrimSpaceLeft(err))
+		fmt.Fprintf(OsStderr, "error: %v\n", TrimSpaceLeft(err))
 		OsExit(1)
 	}
 }

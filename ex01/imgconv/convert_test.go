@@ -9,7 +9,15 @@ import (
 	"testing"
 )
 
+func AssertEquals(t *testing.T, expected bool, actual bool) {
+	t.Helper()
+	if expected != actual {
+		t.Errorf("Unexpected bool\nexpected:%v, actual:%v", expected, actual)
+	}
+}
+
 func TestIsPng(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		input    string // 関数に渡すもの
 		expected bool   // 期待するもの
@@ -20,13 +28,12 @@ func TestIsPng(t *testing.T) {
 		{input: "../testdata/isPng/hoge.jpg.png", expected: true},
 	}
 	for _, c := range cases {
-		if actual := imgconv.IsPng(c.input); actual != c.expected {
-			t.Errorf("want IsEven(%s) = %v, but actual = %v", c.input, c.expected, actual)
-		}
+		AssertEquals(t, c.expected, imgconv.IsPng(c.input))
 	}
 }
 
 func TestTrimSpaceLeft(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		input    error  // 関数に渡すもの
 		expected string // 期待するもの
@@ -73,6 +80,7 @@ func TestCheckError(t *testing.T) {
 }
 
 func TestJpgToPng(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		input string // 関数に渡すもの
 	}{
@@ -121,6 +129,7 @@ func TestDirExists(t *testing.T) {
 }
 
 func TestWalkMainFunc(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		input string // 関数に渡すもの
 	}{
@@ -155,8 +164,7 @@ func TestConvertMain(t *testing.T) {
 		input    string
 		expected int
 	}{
-		// {input: "../testdata", expected: 0},
-		{input: "hoge", expected: 1},
+		{input: "hogehoge", expected: 1},
 	}
 
 	for _, c := range cases {
