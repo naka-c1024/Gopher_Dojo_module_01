@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+var exitStatus int
+
 func readWrite(r io.Reader, w io.Writer) error {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
@@ -45,7 +47,7 @@ func readFile(argc int) {
 		err := openFile(os.Args[i])
 		if err != nil {
 			os.Stderr.WriteString("ft_cat: " + trimSpaceLeft(err) + "\n")
-			os.Exit(1)
+			exitStatus = 1
 		}
 	}
 }
@@ -60,9 +62,10 @@ func readStdin() {
 
 func main() {
 	argc := len(os.Args)
-	if argc == 1 {
+	if argc == 1 || os.Args[1] == "-" {
 		readStdin()
 	} else {
 		readFile(argc)
 	}
+	os.Exit(exitStatus)
 }
