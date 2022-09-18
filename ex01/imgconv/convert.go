@@ -90,20 +90,24 @@ func FindJPG(dirname string) {
 	}
 }
 
-func Convert() int {
-	flag.Parse()
-
-	if flag.Arg(0) == "" {
+func Flag(argv []string) int {
+	argc := len(argv)
+	if argc == 0 {
 		fmt.Fprintf(OsStderr, "error: invalid argument\n")
 		return 1
 	}
-	for i := 0; flag.Arg(i) != ""; i++ {
-		if _, err := os.Stat(flag.Arg(i)); err != nil {
+	for i := 0; i < argc; i++ {
+		if _, err := os.Stat(argv[i]); err != nil {
 			fmt.Fprintf(OsStderr, "error: %s\n", TrimSpaceLeft(err))
 			ExitStatus = 1
 			continue
 		}
-		FindJPG(flag.Arg(i))
+		FindJPG(argv[i])
 	}
 	return ExitStatus
+}
+
+func Convert() int {
+	flag.Parse()
+	return Flag(flag.Args())
 }

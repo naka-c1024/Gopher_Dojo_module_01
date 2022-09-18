@@ -3,7 +3,6 @@ package imgconv_test
 import (
 	"convert/imgconv"
 	"errors"
-	"flag"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,6 +11,7 @@ import (
 )
 
 func TestMyError(t *testing.T) {
+	t.Parallel()
 	expect := "hoge"
 	actual := imgconv.MyError(expect).Error()
 	if actual != expect {
@@ -74,7 +74,7 @@ func errorJPGtoPng(t *testing.T) {
 }
 
 func TestJPGtoPng(t *testing.T) {
-	t.Parallel()
+	// t.Parallel() // kore
 	cases := []struct {
 		input string
 	}{
@@ -123,7 +123,7 @@ func errorFindJPG(t *testing.T) {
 }
 
 func TestFindJPG(t *testing.T) {
-	t.Parallel()
+	// t.Parallel() // kore
 	cases := []struct {
 		input string
 	}{
@@ -149,15 +149,24 @@ func TestFindJPG(t *testing.T) {
 	errorFindJPG(t)
 }
 
-func TestConvert(t *testing.T) {
+func TestFlag(t *testing.T) {
 	t.Parallel()
 	oldOsStderr := imgconv.OsStderr
 	defer func() { imgconv.OsStderr = oldOsStderr }()
 	imgconv.OsStderr = nil
 
-	flag.CommandLine.Set("", "")
-	actual := imgconv.Convert()
-	if actual != 1 {
-		t.Errorf("Fail assert equal. Expect: %d Actual: %d", 1, actual)
+	cases := []struct {
+		input    []string
+		expected int
+	}{
+		{input: nil, expected: 1},
+		{input: []string{"hoge"}, expected: 1},
+		{input: []string{"foo", "bar"}, expected: 1},
+	}
+	for _, c := range cases {
+		actual := imgconv.Flag(c.input)
+		if actual != c.expected {
+			t.Errorf("Fail assert equal. Expect: %d Actual: %d", 1, actual)
+		}
 	}
 }
