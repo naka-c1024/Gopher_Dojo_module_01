@@ -44,6 +44,10 @@ func openFile(filename string) error {
 
 func readFile(argc int) {
 	for i := 1; i < argc; i++ {
+		if os.Args[i] == "-" {
+			readStdin()
+			continue
+		}
 		err := openFile(os.Args[i])
 		if err != nil {
 			os.Stderr.WriteString("ft_cat: " + trimSpaceLeft(err) + "\n")
@@ -62,7 +66,7 @@ func readStdin() {
 
 func main() {
 	argc := len(os.Args)
-	if argc == 1 || os.Args[1] == "-" {
+	if argc == 1 {
 		readStdin()
 	} else {
 		readFile(argc)
