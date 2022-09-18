@@ -37,11 +37,11 @@ func openFile(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 	err = readWrite(f, os.Stdout)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
 	return nil
 }
 
