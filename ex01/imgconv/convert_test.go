@@ -53,7 +53,7 @@ func TestTrimSpaceLeft(t *testing.T) {
 	}
 	for _, c := range cases {
 		if actual := imgconv.TrimSpaceLeft(c.input); actual != c.expected {
-			t.Errorf("want IsEven(%v) = %s, but actual = %s", c.input, c.expected, actual)
+			t.Errorf("want TrimSpaceLeft(%v) = %s, but actual = %s", c.input, c.expected, actual)
 		}
 	}
 }
