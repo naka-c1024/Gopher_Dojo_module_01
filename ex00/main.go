@@ -26,7 +26,10 @@ func trimSpaceLeft(err error) string {
 	if spaceIndex == -1 {
 		return str
 	}
-	return str[spaceIndex+1:]
+	arr := strings.SplitAfter(str[spaceIndex+1:], " ")
+	arr[1] = strings.Title(arr[1])
+	rtn := strings.Join(arr, "")
+	return rtn
 }
 
 func openFile(filename string) error {
