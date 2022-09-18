@@ -1,4 +1,3 @@
-// imgconv は自作パッケージです。
 package imgconv
 
 import (
@@ -12,22 +11,18 @@ import (
 	"strings"
 )
 
-// MyError はユーザー定義型です。
 type MyError string
 
-// Error はMyError型のメソッドです。
 func (e MyError) Error() string {
 	return string(e)
 }
 
 var ExitStatus int
 
-// IsPng は.pngファイルかどうかbool値で返す関数です。
 func IsPng(path string) bool {
 	return filepath.Ext(path) == ".png"
 }
 
-// TrimSpaceLeft はエラーメッセージにおいて不要なスペースから左部分を除く関数です。
 func TrimSpaceLeft(err error) string {
 	str := err.Error()
 	spaceIndex := strings.Index(str, " ")
@@ -37,7 +32,6 @@ func TrimSpaceLeft(err error) string {
 	return str[spaceIndex+1:]
 }
 
-// JPGtoPng はJPGファイルから.pngファイルに変換する関数です。
 func JPGtoPng(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
@@ -72,7 +66,6 @@ func JPGtoPng(path string) error {
 
 var OsStderr = os.Stderr
 
-// FindJPG はJPGファイルを探す関数です。
 func FindJPG(dirname string) {
 	err := filepath.Walk(dirname,
 		func(path string, info os.FileInfo, err error) error {
@@ -97,7 +90,6 @@ func FindJPG(dirname string) {
 	}
 }
 
-// Convert はmypkgのmainとなる関数です。
 func Convert() int {
 	flag.Parse()
 

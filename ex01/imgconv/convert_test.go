@@ -29,8 +29,8 @@ func AssertEquals(t *testing.T, expected bool, actual bool) {
 func TestIsPng(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
-		input    string // 関数に渡すもの
-		expected bool   // 期待するもの
+		input    string
+		expected bool
 	}{
 		{input: "../testdata/isPng/bar.jpg", expected: false},
 		{input: "../testdata/isPng/baz.png.jpg", expected: false},
@@ -43,8 +43,8 @@ func TestIsPng(t *testing.T) {
 func TestTrimSpaceLeft(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
-		input    error  // 関数に渡すもの
-		expected string // 期待するもの
+		input    error
+		expected string
 	}{
 		{input: errors.New("open aaa: no such file or directory"), expected: "aaa: no such file or directory"},
 		{input: errors.New("stat bbb: no such file or directory"), expected: "bbb: no such file or directory"},
@@ -76,7 +76,7 @@ func errorJPGtoPng(t *testing.T) {
 func TestJPGtoPng(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
-		input string // 関数に渡すもの
+		input string
 	}{
 		{input: "../testdata/Go-BB_cover.jpg"},
 		{input: "../testdata/Go-BB_spread1.jpg"},
@@ -118,14 +118,14 @@ func errorFindJPG(t *testing.T) {
 		if imgconv.ExitStatus != c.expected {
 			t.Errorf("want FindJPG(%s) = %d, but actual = %d", c.input, c.expected, imgconv.ExitStatus)
 		}
-		imgconv.ExitStatus = 0 // 元に戻す
+		imgconv.ExitStatus = 0
 	}
 }
 
 func TestFindJPG(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
-		input string // 関数に渡すもの
+		input string
 	}{
 		{input: "../testdata/Go-BB_cover.jpg"},
 		{input: "../testdata/Go-BB_spread1.jpg"},
