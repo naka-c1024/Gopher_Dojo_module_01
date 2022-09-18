@@ -74,7 +74,7 @@ func errorJPGtoPng(t *testing.T) {
 }
 
 func TestJPGtoPng(t *testing.T) {
-	// t.Parallel() // kore
+	// 作成したpngが他の関数でrmされたらstatで拾えないのでt.Parallel使わない
 	cases := []struct {
 		input string
 	}{
@@ -123,7 +123,7 @@ func errorFindJPG(t *testing.T) {
 }
 
 func TestFindJPG(t *testing.T) {
-	// t.Parallel() // kore
+	// 作成したpngが他の関数でrmされたらstatで拾えないのでt.Parallel使わない
 	cases := []struct {
 		input string
 	}{
